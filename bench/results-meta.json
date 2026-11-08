@@ -1,0 +1,729 @@
+{
+  "dataset": "meta",
+  "datasetVersion": "0.1.0",
+  "plugin": {
+    "name": "dsh-meta-analysis",
+    "version": "0.1.1"
+  },
+  "command": "pnpm run bench:meta",
+  "call": "pool(studies, { model: 'both' })",
+  "confidenceLevel": 0.95,
+  "cases": 20,
+  "passed": 20,
+  "failed": 0,
+  "passRate": 1,
+  "tolerances": {
+    "effect": 0.000001,
+    "se": 0.000001,
+    "ci": 0.000001,
+    "Q": 0.000001,
+    "tau2": 0.000001,
+    "I2": 1e-9,
+    "pQ": 1e-9,
+    "integers": 0
+  },
+  "fields": {
+    "fixed.effect": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 1.1102230246251565e-16,
+      "meanAbsError": 6.938893903907228e-18,
+      "pass": true
+    },
+    "fixed.se": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 6.938893903907228e-18,
+      "meanAbsError": 8.673617379884035e-19,
+      "pass": true
+    },
+    "fixed.ciLow": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 1.1102230246251565e-16,
+      "meanAbsError": 2.2204460492503132e-17,
+      "pass": true
+    },
+    "fixed.ciHigh": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 1.1102230246251565e-16,
+      "meanAbsError": 2.706168622523819e-17,
+      "pass": true
+    },
+    "random.effect": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 5.551115123125783e-17,
+      "meanAbsError": 9.714451465470119e-18,
+      "pass": true
+    },
+    "random.se": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 2.7755575615628914e-17,
+      "meanAbsError": 2.6020852139652106e-18,
+      "pass": true
+    },
+    "random.ciLow": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 1.1102230246251565e-16,
+      "meanAbsError": 4.371503159461554e-17,
+      "pass": true
+    },
+    "random.ciHigh": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 2.220446049250313e-16,
+      "meanAbsError": 6.522560269672795e-17,
+      "pass": true
+    },
+    "Q": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 8.526512829121202e-14,
+      "meanAbsError": 7.577272143066693e-15,
+      "pass": true
+    },
+    "tau2": {
+      "tolerance": 0.000001,
+      "n": 20,
+      "maxAbsError": 8.326672684688674e-17,
+      "meanAbsError": 6.7220534694101275e-18,
+      "pass": true
+    },
+    "I2": {
+      "tolerance": 1e-9,
+      "n": 20,
+      "maxAbsError": 2.220446049250313e-16,
+      "meanAbsError": 1.9428902930940238e-17,
+      "pass": true
+    },
+    "pQ": {
+      "tolerance": 1e-9,
+      "n": 20,
+      "maxAbsError": 1.6653345369377348e-15,
+      "meanAbsError": 1.9586060198626889e-16,
+      "pass": true
+    },
+    "k": {
+      "tolerance": 0,
+      "n": 20,
+      "maxAbsError": 0,
+      "meanAbsError": 0,
+      "pass": true
+    },
+    "df": {
+      "tolerance": 0,
+      "n": 20,
+      "maxAbsError": 0,
+      "meanAbsError": 0,
+      "pass": true
+    }
+  },
+  "egger": {
+    "boundaryK": 10,
+    "expectedRun": 11,
+    "actualRun": 11,
+    "matched": 20,
+    "missing": [],
+    "unexpected": []
+  },
+  "failures": [],
+  "perCase": [
+    {
+      "id": "meta-0001",
+      "category": "homogeneous",
+      "k": 5,
+      "pass": true,
+      "maxAbsError": 2.7755575615628914e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 2.7755575615628914e-17,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 2.7755575615628914e-17,
+        "random.ciHigh": 0,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 0,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0002",
+      "category": "homogeneous",
+      "k": 5,
+      "pass": true,
+      "maxAbsError": 1.1102230246251565e-16,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 2.7755575615628914e-17,
+        "fixed.ciHigh": 5.551115123125783e-17,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 2.7755575615628914e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 1.1102230246251565e-16,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0003",
+      "category": "homogeneous",
+      "k": 2,
+      "pass": true,
+      "maxAbsError": 5.551115123125783e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 5.551115123125783e-17,
+        "fixed.ciHigh": 5.551115123125783e-17,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 0,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0004",
+      "category": "homogeneous",
+      "k": 10,
+      "pass": true,
+      "maxAbsError": 1.1102230246251565e-16,
+      "errors": {
+        "fixed.effect": 2.7755575615628914e-17,
+        "fixed.se": 3.469446951953614e-18,
+        "fixed.ciLow": 2.7755575615628914e-17,
+        "fixed.ciHigh": 2.7755575615628914e-17,
+        "random.effect": 2.7755575615628914e-17,
+        "random.se": 3.469446951953614e-18,
+        "random.ciLow": 2.7755575615628914e-17,
+        "random.ciHigh": 2.7755575615628914e-17,
+        "Q": 1.1102230246251565e-16,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 0,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 8,
+        "intercept": 0.16697510472363053,
+        "p": 0.40271157723361983
+      }
+    },
+    {
+      "id": "meta-0005",
+      "category": "homogeneous",
+      "k": 12,
+      "pass": true,
+      "maxAbsError": 0,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 0,
+        "random.ciHigh": 0,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 0,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 10,
+        "intercept": -1.8854166666666667,
+        "p": 1
+      }
+    },
+    {
+      "id": "meta-0006",
+      "category": "medium-heterogeneity",
+      "k": 5,
+      "pass": true,
+      "maxAbsError": 2.7755575615628914e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 2.7755575615628914e-17,
+        "random.ciHigh": 0,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 2.0816681711721685e-17,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0007",
+      "category": "medium-heterogeneity",
+      "k": 5,
+      "pass": true,
+      "maxAbsError": 1.7763568394002505e-15,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 1.3877787807814457e-17,
+        "fixed.ciHigh": 2.7755575615628914e-17,
+        "random.effect": 2.7755575615628914e-17,
+        "random.se": 0,
+        "random.ciLow": 0,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 1.7763568394002505e-15,
+        "tau2": 5.204170427930421e-18,
+        "I2": 2.220446049250313e-16,
+        "pQ": 4.163336342344337e-16,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0008",
+      "category": "medium-heterogeneity",
+      "k": 10,
+      "pass": true,
+      "maxAbsError": 5.551115123125783e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 2.7755575615628914e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 3.469446951953614e-17,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 8,
+        "intercept": 3,
+        "p": 1
+      }
+    },
+    {
+      "id": "meta-0009",
+      "category": "medium-heterogeneity",
+      "k": 12,
+      "pass": true,
+      "maxAbsError": 2.7755575615628914e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 1.3877787807814457e-17,
+        "fixed.ciHigh": 2.7755575615628914e-17,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 1.3877787807814457e-17,
+        "random.ciHigh": 0,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 1.3877787807814457e-17,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 10,
+        "intercept": 2.5,
+        "p": 1.0281602162334508e-161
+      }
+    },
+    {
+      "id": "meta-0010",
+      "category": "medium-heterogeneity",
+      "k": 10,
+      "pass": true,
+      "maxAbsError": 3.552713678800501e-15,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 6.938893903907228e-18,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 2.7755575615628914e-17,
+        "random.se": 6.938893903907228e-18,
+        "random.ciLow": 2.7755575615628914e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 3.552713678800501e-15,
+        "tau2": 8.673617379884035e-19,
+        "I2": 1.6653345369377348e-16,
+        "pQ": 3.3306690738754696e-16,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 8,
+        "intercept": 2.499999999999999,
+        "p": 7.609287330070962e-125
+      }
+    },
+    {
+      "id": "meta-0011",
+      "category": "high-heterogeneity",
+      "k": 10,
+      "pass": true,
+      "maxAbsError": 5.551115123125783e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 1.3877787807814457e-17,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 1.1122794269903011e-65,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 8,
+        "intercept": 1,
+        "p": 1
+      }
+    },
+    {
+      "id": "meta-0012",
+      "category": "high-heterogeneity",
+      "k": 10,
+      "pass": true,
+      "maxAbsError": 8.526512829121202e-14,
+      "errors": {
+        "fixed.effect": 1.1102230246251565e-16,
+        "fixed.se": 3.469446951953614e-18,
+        "fixed.ciLow": 1.1102230246251565e-16,
+        "fixed.ciHigh": 1.1102230246251565e-16,
+        "random.effect": 5.551115123125783e-17,
+        "random.se": 2.7755575615628914e-17,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 2.220446049250313e-16,
+        "Q": 8.526512829121202e-14,
+        "tau2": 8.326672684688674e-17,
+        "I2": 0,
+        "pQ": 4.874204514783744e-28,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 8,
+        "intercept": 7.499999999999998,
+        "p": 2.7026645901409566e-126
+      }
+    },
+    {
+      "id": "meta-0013",
+      "category": "high-heterogeneity",
+      "k": 12,
+      "pass": true,
+      "maxAbsError": 1.1102230246251565e-16,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 2.7755575615628914e-17,
+        "fixed.ciHigh": 2.7755575615628914e-17,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 1.1102230246251565e-16,
+        "random.ciHigh": 1.1102230246251565e-16,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 9.921160036625895e-42,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 10,
+        "intercept": 1.0416666666666667,
+        "p": 1
+      }
+    },
+    {
+      "id": "meta-0014",
+      "category": "high-heterogeneity",
+      "k": 12,
+      "pass": true,
+      "maxAbsError": 5.551115123125783e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 1.9976856452311404e-43,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 10,
+        "intercept": 7.877873090790874,
+        "p": 0.00005314762476518089
+      }
+    },
+    {
+      "id": "meta-0015",
+      "category": "zero-effect",
+      "k": 12,
+      "pass": true,
+      "maxAbsError": 5.684341886080802e-14,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 3.469446951953614e-18,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 1.3877787807814457e-17,
+        "random.ciLow": 8.326672684688674e-17,
+        "random.ciHigh": 8.326672684688674e-17,
+        "Q": 5.684341886080802e-14,
+        "tau2": 1.3877787807814457e-17,
+        "I2": 0,
+        "pQ": 1.3010481203260641e-23,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 10,
+        "intercept": 0,
+        "p": 1
+      }
+    },
+    {
+      "id": "meta-0016",
+      "category": "zero-effect",
+      "k": 5,
+      "pass": true,
+      "maxAbsError": 5.551115123125783e-17,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 1.3877787807814457e-17,
+        "fixed.ciHigh": 1.3877787807814457e-17,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 2.1023099670500618e-17,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0017",
+      "category": "negative-effect",
+      "k": 10,
+      "pass": true,
+      "maxAbsError": 3.552713678800501e-15,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 0,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 5.551115123125783e-17,
+        "Q": 3.552713678800501e-15,
+        "tau2": 3.469446951953614e-18,
+        "I2": 0,
+        "pQ": 7.979727989493313e-17,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": true,
+        "actual": true,
+        "matched": true,
+        "df": 8,
+        "intercept": 1407374883553280.2,
+        "p": 0.758464328956917
+      }
+    },
+    {
+      "id": "meta-0018",
+      "category": "negative-effect",
+      "k": 2,
+      "pass": true,
+      "maxAbsError": 1.6653345369377348e-15,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 0,
+        "fixed.ciHigh": 2.7755575615628914e-17,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 2.7755575615628914e-17,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 1.6653345369377348e-15,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0019",
+      "category": "small-k",
+      "k": 2,
+      "pass": true,
+      "maxAbsError": 5.551115123125783e-16,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 5.551115123125783e-17,
+        "fixed.ciHigh": 1.1102230246251565e-16,
+        "random.effect": 0,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 1.1102230246251565e-16,
+        "Q": 0,
+        "tau2": 0,
+        "I2": 0,
+        "pQ": 5.551115123125783e-16,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    },
+    {
+      "id": "meta-0020",
+      "category": "small-k",
+      "k": 2,
+      "pass": true,
+      "maxAbsError": 6.661338147750939e-16,
+      "errors": {
+        "fixed.effect": 0,
+        "fixed.se": 0,
+        "fixed.ciLow": 5.551115123125783e-17,
+        "fixed.ciHigh": 5.551115123125783e-17,
+        "random.effect": 5.551115123125783e-17,
+        "random.se": 0,
+        "random.ciLow": 5.551115123125783e-17,
+        "random.ciHigh": 2.220446049250313e-16,
+        "Q": 4.440892098500626e-16,
+        "tau2": 2.7755575615628914e-17,
+        "I2": 0,
+        "pQ": 6.661338147750939e-16,
+        "k": 0,
+        "df": 0
+      },
+      "egger": {
+        "expected": false,
+        "actual": false,
+        "matched": true
+      }
+    }
+  ]
+}

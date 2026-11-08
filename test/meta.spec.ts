@@ -19,6 +19,12 @@ describe('special functions', () => {
     expect(zTwoSidedP(1.959964)).toBeCloseTo(0.05, 4)
     expect(normalQuantile(0.975)).toBeCloseTo(1.959964, 5)
   })
+
+  it('computes the normal quantile to double precision', () => {
+    expect(normalQuantile(0.975)).toBeCloseTo(1.959963984540054, 12)
+    expect(normalQuantile(0.025)).toBeCloseTo(-1.959963984540054, 12)
+    expect(normalQuantile(0.5)).toBe(0)
+  })
 })
 
 describe('conversions', () => {

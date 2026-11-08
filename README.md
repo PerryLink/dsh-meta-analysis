@@ -41,7 +41,7 @@ English · [简体中文](README-zh.md)
 | SMD | `(m₁−m₂)/s_pooled`, SE `√(1/n₁+1/n₂+d²/(2(n₁+n₂)))` |
 | Egger | OLS intercept of `θᵢ/SEᵢ` on `1/SEᵢ`, t with df = k−2 |
 
-Normal-tail p uses an A&S 7.1.26 approximation (~1e-7); χ² and t use regularized incomplete gamma/beta continued fractions (~1e-10). Both are implemented in `src/math.ts` with no dependencies.
+Normal-tail p uses an A&S 7.1.26 approximation (~1e-7); Φ⁻¹ uses Wichura's AS 241 / PPND16 (~1e-16); χ² and t use regularized incomplete gamma/beta continued fractions (~1e-10). All are implemented in `src/math.ts` with no dependencies.
 
 ## Tools
 
@@ -85,9 +85,34 @@ dsh --profile <name> --dump-config | grep dsh-meta-analysis
 
 ## Evaluation
 
-**21 tests**: special functions against known critical values (χ²(8,2)=0.9817, t(2.306,8)≈0.05, z(1.96)≈0.05, Φ⁻¹(0.975)), conversions (logOR+SE, d⇄r, d⇄OR, SMD, impossible inputs), pooling (hand-calculated fixed/random estimates, Q=8, I²=0.75, τ²=0.03 from three studies), the requested confidence level for pooled and study CIs, CI-derived SE and SE/CI disagreement rejection, invalid models/levels/studies, Egger gating at k=10, heterogeneity warnings, tool schemas, malformed-report rejection, end-to-end report, plugin contract, package contract.
+**23 unit tests**: special functions against known critical values (χ²(8,2)=0.9817, t(2.306,8)≈0.05, z(1.96)≈0.05, Φ⁻¹(0.975) to 12 decimal places), conversions (logOR+SE, d⇄r, d⇄OR, SMD, impossible inputs), pooling (hand-calculated fixed/random estimates, Q=8, I²=0.75, τ²=0.03 from three studies), the requested confidence level for pooled and study CIs, CI-derived SE and SE/CI disagreement rejection, invalid models/levels/studies, Egger gating at k=10, heterogeneity warnings, tool schemas, malformed-report rejection, end-to-end report, plugin contract, package contract and the enabled/disabled mount contract.
 
-No benchmark is claimed: this is closed-form arithmetic whose correctness is checked against hand calculations and published critical values, not against a labelled corpus.
+### Synthetic meta-analysis benchmark
+
+A separate **20-case, deterministic synthetic benchmark** (dataset `meta` v0.1.0, frozen) lives in the sibling `dsh-research-bench` repository under `data/meta`; it is not vendored into this package. Each case supplies studies (effect + SE, or a symmetric CI) and closed-form expected values for fixed/random pooling, Q, df, pQ, I², τ² and Egger presence.
+
+Coverage: 5 homogeneous cases (I²=0, τ²=0), 5 medium- and 4 high-heterogeneity cases (Q>df, τ²>0), 2 zero-effect, 2 negative-effect and 2 small-k cases; k = 2 (4 cases), 5 (5), 10 (6) and 12 (5); 10 equal-SE and 10 unequal-SE designs; SE-only, CI-only and mixed inputs. Egger runs on the 11 cases with k ≥ 10 (including the k=10 boundary) and on none of the 9 below it.
+
+The adapter calls `pool(studies, { model: 'both' })` and compares against the generator's independent implementation (no plugin import, no expected value derived from plugin output). **20/20 cases pass**; absolute errors:
+
+| Quantity | Max abs error | Mean abs error | Tolerance |
+|---|---:|---:|---:|
+| fixed/random effect | 1.11e-16 | 8.33e-18 | 1e-6 |
+| fixed/random SE | 2.78e-17 | 1.74e-18 | 1e-6 |
+| fixed/random CI | 2.22e-16 | 3.96e-17 | 1e-6 |
+| Q | 8.53e-14 | 7.58e-15 | 1e-6 |
+| τ² | 8.33e-17 | 6.72e-18 | 1e-6 |
+| I² | 2.22e-16 | 1.94e-17 | 1e-9 |
+| pQ | 1.67e-15 | 1.96e-16 | 1e-9 |
+
+The benchmark surfaced one real precision limit: the old Acklam Φ⁻¹ was 1.6e-9 off at 95%, and CI-derived SEs amplified it into I² deviations of 1.12e-9 on two cases. `normalQuantile` now uses AS 241; the largest Q error is 8.5e-14.
+
+```sh
+pnpm run build
+pnpm run bench:meta        # reads ../dsh-research-bench/data/meta (BENCH_DIR overrides)
+```
+
+It writes `bench/results-meta.json` and `bench/results-meta.md` (no timestamps; re-running is byte-identical).
 
 ## Known limitations (v0.1)
 

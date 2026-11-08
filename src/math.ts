@@ -3,9 +3,10 @@
  * log-gamma, regularized lower incomplete gamma (χ² CDF), regularized
  * incomplete beta (t CDF) and a two-sided normal tail.
  *
- * Accuracy target is ~1e-10 for the gamma/beta continued fractions and ~1e-7
- * for the normal tail approximation; that is enough for pooling output, and the
- * README says which approximation is used.
+ * Accuracy target is ~1e-10 for the gamma/beta continued fractions, ~1e-7
+ * for the normal tail approximation and ~1e-16 for the normal quantile
+ * (Wichura's AS 241); that is enough for pooling output, and the README says
+ * which approximation is used.
  *
  * @module dsh-meta-analysis/math
  */
@@ -129,21 +130,57 @@ export function zTwoSidedP(z: number): number {
   return Math.max(0, Math.min(1, 1 - erf))
 }
 
-/** Quantile of the standard normal (Acklam's rational approximation). */
+/** AS 241 (PPND16) coefficients, lowest degree first. */
+const AS241_A = [
+  3.387132872796366608, 1.3314166789178437745e2, 1.9715909503065514427e3, 1.3731693765509461125e4,
+  4.5921953931549871457e4, 6.7265770927008700853e4, 3.3430575583588128105e4, 2.5090809287301226727e3,
+]
+const AS241_B = [
+  1, 4.2313330701600911252e1, 6.871870074920579083e2, 5.3941960214247511077e3,
+  2.1213794301586595867e4, 3.930789580009271061e4, 2.8729085735721942674e4, 5.226495278852854561e3,
+]
+const AS241_C = [
+  1.42343711074968357734, 4.6303378461565452959, 5.7694972214606914055, 3.64784832476320460504,
+  1.27045825245236838258, 2.4178072517745061177e-1, 2.27238449892691845833e-2, 7.7454501427834140764e-4,
+]
+const AS241_D = [
+  1, 2.05319162663775882187, 1.6763848301838038494, 6.8976733498510000455e-1,
+  1.4810397642748007459e-1, 1.51986665636164571966e-2, 5.475938084995344946e-4, 1.05075007164441684324e-9,
+]
+const AS241_E = [
+  6.6579046435011037772, 5.4637849111641143699, 1.7848265399172913358, 2.9656057182850489123e-1,
+  2.6532189526576123093e-2, 1.2426609473880784386e-3, 2.71155556874348757815e-5, 2.01033439929228813265e-7,
+]
+const AS241_F = [
+  1, 5.9983220655588793769e-1, 1.3692988092273580531e-1, 1.48753612908506148525e-2,
+  7.868691311456132591e-4, 1.8463183175100546818e-5, 1.4215117583164458887e-7, 2.04426310338993978564e-15,
+]
+
+/** Horner evaluation with the coefficients ordered from lowest to highest degree. */
+function horner(coefficients: readonly number[], value: number): number {
+  let result = coefficients[coefficients.length - 1]!
+  for (let index = coefficients.length - 2; index >= 0; index -= 1) result = result * value + coefficients[index]!
+  return result
+}
+
+/** Quantile of the standard normal (Wichura's AS 241 / PPND16, ~1e-16). */
 export function normalQuantile(p: number): number {
   if (p <= 0) return Number.NEGATIVE_INFINITY
   if (p >= 1) return Number.POSITIVE_INFINITY
-  const a = [-3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.38357751867269e2, -3.066479806614716e1, 2.506628277459239]
-  const b = [-5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1, -1.328068155288572e1]
-  const c = [-7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783]
-  const d = [7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996, 3.754408661907416]
-  const low = 0.02425
-  if (p < low) {
-    const q = Math.sqrt(-2 * Math.log(p))
-    return (((((c[0]! * q + c[1]!) * q + c[2]!) * q + c[3]!) * q + c[4]!) * q + c[5]!) / ((((d[0]! * q + d[1]!) * q + d[2]!) * q + d[3]!) * q + 1)
-  }
-  if (p > 1 - low) return -normalQuantile(1 - p)
   const q = p - 0.5
-  const r = q * q
-  return (((((a[0]! * r + a[1]!) * r + a[2]!) * r + a[3]!) * r + a[4]!) * r + a[5]!) * q / (((((b[0]! * r + b[1]!) * r + b[2]!) * r + b[3]!) * r + b[4]!) * r + 1)
+  if (Math.abs(q) <= 0.425) {
+    const r = 0.180625 - q * q
+    return (q * horner(AS241_A, r)) / horner(AS241_B, r)
+  }
+  const tail = q < 0 ? p : 1 - p
+  const r = Math.sqrt(-Math.log(tail))
+  let value: number
+  if (r <= 5) {
+    const shifted = r - 1.6
+    value = horner(AS241_C, shifted) / horner(AS241_D, shifted)
+  } else {
+    const shifted = r - 5
+    value = horner(AS241_E, shifted) / horner(AS241_F, shifted)
+  }
+  return q < 0 ? -value : value
 }

@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Deterministic 20-case synthetic meta-analysis benchmark: `bench/run-meta.mjs`,
+  the `bench:meta` script, and committed `bench/results-meta.json` /
+  `bench/results-meta.md`. The expected values are an independent closed-form
+  implementation in the dsh-research-bench generator, not plugin output.
+- A double-precision normal-quantile test.
+
+### Fixed
+
+- `normalQuantile` now uses Wichura's AS 241 (PPND16) instead of Acklam's
+  rational approximation: Φ⁻¹(0.975) is accurate to ~1e-16 instead of
+  ~1.6e-9. The benchmark's CI-derived SEs had amplified the old error into
+  I² deviations of 1.12e-9 on two cases; the maximum is now 2.2e-16.
+
 ## [0.1.1] - 2026-11-08
 
 ### Changed
