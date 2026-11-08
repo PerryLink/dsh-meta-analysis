@@ -1,0 +1,13 @@
+# dsh-meta-analysis bundle patch: mount the pooling tools.
+#
+# Every key below is a Config field (Schemastery schema); invalid values fail the
+# profile load loudly. Everything is local arithmetic; no network, no store.
+- insert:
+    - id: dsh-meta-analysis
+      name: dsh-meta-analysis
+      config:
+        enabled: true
+        # Default pooling model when a call does not choose one.
+        model: both
+        # Default confidence level for pooled and study CIs.
+        level: 0.95
