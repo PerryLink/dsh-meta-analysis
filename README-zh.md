@@ -1,8 +1,8 @@
 # dsh-meta-analysis
 
-**把效应量合并起来——每一步算术都能对得出来。**
+**把效应量合并起来 —— 每一步算术都能逐行核对。**
 
-*带公式名的效应量换算、固定效应与 DerSimonian–Laird 随机效应合并、Q / I² / τ²、森林图数据、Markdown + SARIF，以及只在 ≥10 项研究时才运行的轻量 Egger 检验。*
+*带具名公式的效应量换算、固定效应与 DerSimonian–Laird 随机效应合并、Q / I² / τ²、森林图数据、Markdown + SARIF，以及一项在少于十项研究时拒绝运行的轻量 Egger 检验。*
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-brightgreen.svg)]()
@@ -13,62 +13,62 @@
 
 ## 它做什么
 
-- **`ma_pool`** — inverse-variance pooling on one analysis scale. Fixed: `w = 1/v`, pooled `Σwθ/Σw`, `SE = 1/√Σw`. Random: DerSimonian–Laird `τ²`, weights `1/(v+τ²)`. Reports Q, df, p, I², τ², per-study weights and the pooled CI/p at the requested confidence level (`level`, default 0.95).
-- **`ma_convert`** — OR⇄logOR, RR⇄logRR (SE from a CI), d⇄r, d⇄OR (logistic approximation), SMD from two means, SE from a CI. Every result names the formula and any approximation.
-- **`ma_report`** — renderer-agnostic forest data (effect, CI, weight % + pooled row), Markdown, SARIF 2.1.0.
-- **Egger** — only at k ≥ 10: OLS of θᵢ/SEᵢ on 1/SEᵢ; the intercept tests small-study effects. Labelled a screening aid, not proof of reporting bias.
+- **`ma_pool`** —— 在单一分析尺度上做逆方差合并。固定效应：`w = 1/v`，合并值 `Σwθ/Σw`，`SE = 1/√Σw`。随机效应：DerSimonian–Laird `τ²`，权重 `1/(v+τ²)`。报告 Q、df、p、I²、τ²、各研究权重，以及按所请求置信水平（`level`，默认 0.95）计算的合并 CI/p。
+- **`ma_convert`** —— OR⇄logOR、RR⇄logRR（由 CI 求 SE）、d⇄r、d⇄OR（logistic 近似）、由两个均值求 SMD、由 CI 求 SE。每个结果都会注明所用公式及任何近似。
+- **`ma_report`** —— 与渲染器无关的森林图数据（效应、CI、权重百分比 + 合并行）、Markdown、SARIF 2.1.0。
+- **Egger** —— 仅在 k ≥ 10 时运行：以 `θᵢ/SEᵢ` 对 `1/SEᵢ` 做 OLS；截距用于检验小样本研究效应。它被明确标为筛查辅助手段，而不是发表偏倚的证据。
 
 ## 它不做什么
 
-- **No model fitting beyond DL.** No REML/Paule–Mandel, no meta-regression, no subgroup or leave-one-out automation (the inputs are yours to vary), no trim-and-fill.
-- **No risk-of-bias judgement.** Weights do not encode study quality.
-- **No data extraction.** Effect sizes and SEs must be supplied on one scale; `ma_convert` helps produce them.
-- **No plots.** Forest data is provided; drawing belongs to the host or another tool.
-- **No evidence store.** This plugin is pure arithmetic: nothing is written to disk, and the README says so instead of pretending there is a REP record.
+- **除 DL 外不做模型拟合。** 不支持 REML/Paule–Mandel，不做 meta 回归，不自动做亚组分析或留一法分析（输入由你自行调整），也不做 trim-and-fill。
+- **不做偏倚风险判断。** 权重不反映研究质量。
+- **不做数据提取。** 效应量与 SE 必须按同一尺度提供；`ma_convert` 可帮助生成。
+- **不绘图。** 只提供森林图数据；绘制交给宿主或其他工具。
+- **不写证据存储。** 本插件是纯算术：不会向磁盘写入任何内容，README 如实说明这一点，而不是假装存在 REP 记录。
 
 ## 公式
 
-| Quantity | Formula |
+| 量 | 公式 |
 |---|---|
-| Fixed pooled | `Σwᵢθᵢ / Σwᵢ`, `wᵢ = 1/vᵢ` |
-| Random pooled | same with `wᵢ* = 1/(vᵢ + τ²)` |
+| 固定效应合并值 | `Σwᵢθᵢ / Σwᵢ`, `wᵢ = 1/vᵢ` |
+| 随机效应合并值 | 同上，权重改为 `wᵢ* = 1/(vᵢ + τ²)` |
 | Q | `Σ wᵢ(θᵢ − θ_FE)²`, df = k−1 |
 | I² | `max(0, (Q − df)/Q)` |
 | τ² (DL) | `max(0, (Q − df)/(Σw − Σw²/Σw))` |
-| SE from CI | `(high − low)/(2·z)` |
+| 由 CI 求 SE | `(high − low)/(2·z)` |
 | d→r | `d/√(d²+4)` |
 | d⇄OR | `exp(d·π/√3)` / `log(OR)·√3/π` |
 | SMD | `(m₁−m₂)/s_pooled`, SE `√(1/n₁+1/n₂+d²/(2(n₁+n₂)))` |
-| Egger | OLS intercept of `θᵢ/SEᵢ` on `1/SEᵢ`, t with df = k−2 |
+| Egger | 以 `θᵢ/SEᵢ` 对 `1/SEᵢ` 做 OLS 的截距，t 检验 df = k−2 |
 
-Normal-tail p uses an A&S 7.1.26 approximation (~1e-7); χ² and t use regularized incomplete gamma/beta continued fractions (~1e-10). Both are implemented in `src/math.ts` with no dependencies.
+正态尾部 p 使用 A&S 7.1.26 近似（约 1e-7）；χ² 与 t 使用正则化不完全 gamma/beta 连分数（约 1e-10）。两者都在 `src/math.ts` 中实现，且无依赖。
 
 ## 工具
 
 ### `ma_pool`
 
-`{ studies: [{label, effect, se?, ciLow?, ciHigh?}], model?, level? }` → `{ ok, result }`.
+`{ studies: [{label, effect, se?, ciLow?, ciHigh?}], model?, level? }` → `{ ok, result }`。
 
 ### `ma_convert`
 
-`{ conversion, value?, low?, high?, level?, mean1?, sd1?, n1?, mean2?, sd2?, n2? }` → `{ ok, result }`.
+`{ conversion, value?, low?, high?, level?, mean1?, sd1?, n1?, mean2?, sd2?, n2? }` → `{ ok, result }`。
 
 ### `ma_report`
 
-`{ result, measure? }` → `{ ok, forest, markdown, sarif }`.
+`{ result, measure? }` → `{ ok, forest, markdown, sarif }`。
 
-### Error codes
+### 错误码
 
-`INVALID_INPUT` (non-finite values, non-positive SE/OR/RR, |r| ≥ 1, SE/CI disagreement, k < 2).
+`INVALID_INPUT`（非有限值、非正的 SE/OR/RR、|r| ≥ 1、SE 与 CI 不一致、k < 2）。
 
 ## 兼容性与安装
 
 | | |
 |---|---|
-| DeepSeek Harness | **`dsh-v0.2.1-rc.5`** (verified 2026-11-08); peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
-| Node | `^22.19.0 \|\| >=24.9.0` (tested `24.22.1`), ESM only |
-| Peers | `@perrylink/dsh-research-core ^0.1.0`, `@deepseek-ai/cordis ^4.0.5-alpha.1`, `@deepseek-ai/dsh-tools`, `@deepseek-ai/schemastery ^3.18.5-alpha.1` |
-| Runtime dependencies | **zero** |
+| DeepSeek Harness | **`dsh-v0.2.1-rc.5`**（2026-11-08 实测）；peer `>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
+| Node | `^22.19.0 \|\| >=24.9.0`（实测 `24.22.1`），仅 ESM |
+| Peer 依赖 | `@perrylink/dsh-research-core ^0.1.0`、`@deepseek-ai/cordis ^4.0.5-alpha.1`、`@deepseek-ai/dsh-tools`、`@deepseek-ai/schemastery ^3.18.5-alpha.1` |
+| 运行时依赖 | **零** |
 
 ```sh
 dsh plugin --profile <name> add @perrylink/dsh-research-core dsh-meta-analysis
@@ -77,25 +77,25 @@ dsh --profile <name> --dump-config | grep dsh-meta-analysis
 
 ## 配置
 
-| Key | Default | Meaning |
+| 键 | 默认值 | 含义 |
 |---|---|---|
-| `enabled` | `true` | `false` mounts nothing |
-| `model` | `both` | default pooling model (`fixed` / `random` / `both`) |
-| `level` | `0.95` | default confidence level |
+| `enabled` | `true` | `false` 时不挂载任何内容 |
+| `model` | `both` | 默认合并模型（`fixed` / `random` / `both`） |
+| `level` | `0.95` | 默认置信水平 |
 
 ## 评测
 
-**21 tests**: special functions against known critical values (χ²(8,2)=0.9817, t(2.306,8)≈0.05, z(1.96)≈0.05, Φ⁻¹(0.975)), conversions (logOR+SE, d⇄r, d⇄OR, SMD, impossible inputs), pooling (hand-calculated fixed/random estimates, Q=8, I²=0.75, τ²=0.03 from three studies), the requested confidence level for pooled and study CIs, CI-derived SE and SE/CI disagreement rejection, invalid models/levels/studies, Egger gating at k=10, heterogeneity warnings, tool schemas, malformed-report rejection, end-to-end report, plugin contract, package contract.
+**21 个测试**：特殊函数对照已知临界值（χ²(8,2)=0.9817、t(2.306,8)≈0.05、z(1.96)≈0.05、Φ⁻¹(0.975)）、换算（logOR+SE、d⇄r、d⇄OR、SMD、不可能输入）、合并（手工计算的固定/随机效应估计，三项研究得到 Q=8、I²=0.75、τ²=0.03）、合并与各研究 CI 按所请求置信水平计算、由 CI 推导 SE 及拒绝 SE/CI 不一致、非法模型/置信水平/研究输入、Egger 在 k=10 时的门控、异质性警告、工具 schema、格式错误报告拒绝、端到端报告、插件契约、包契约。
 
-No benchmark is claimed: this is closed-form arithmetic whose correctness is checked against hand calculations and published critical values, not against a labelled corpus.
+不声称基准测试结果：这是闭式算术，其正确性用手工计算和已发表的临界值来核对，而不是靠带标注的语料。
 
 ## 已知限制（v0.1）
 
-- One analysis scale per call; multi-scale harmonisation is the caller's job.
-- DL τ² is known to be biased at small k; the plugin warns when k < 5.
-- The Egger test assumes a normal distribution of effects and is underpowered below ~10 studies.
-- No prediction interval (could be added without changing the interface).
+- 每次调用只处理一个分析尺度；多尺度协调由调用方负责。
+- 已知 DL 的 τ² 在 k 较小时有偏；当 k < 5 时插件会警告。
+- Egger 检验假设效应服从正态分布，在少于约 10 项研究时检验效能不足。
+- 不提供预测区间（可以在不改变接口的情况下加入）。
 
 ## 许可
 
-Apache-2.0. No third-party runtime code.
+Apache-2.0。运行时不含第三方代码。
