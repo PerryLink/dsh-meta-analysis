@@ -1,7 +1,7 @@
 # dsh-meta-analysis benchmark: meta
 
 - Dataset: `meta` v0.1.0 (20 synthetic cases)
-- Plugin: `dsh-meta-analysis` v0.1.1
+- Plugin: `dsh-meta-analysis` v0.1.2
 - Call: `pool(studies, { model: 'both' })` at level 0.95
 - Command: `pnpm run bench:meta`
 - Pass rate: **20/20 (100.00%)**

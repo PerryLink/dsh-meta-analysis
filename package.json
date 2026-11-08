@@ -1,6 +1,6 @@
 {
   "name": "dsh-meta-analysis",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Meta-analysis arithmetic for DeepSeek Harness: effect-size conversions (OR/RR/d/r/SMD, SE from CI) with named formulas, fixed-effect and DerSimonian-Laird random-effects pooling, Q/df/p, I2, tau2, forest-plot data, Markdown/SARIF reports and a light Egger test for k >= 10. Local, dependency-free, reproducible from the inputs.",
   "author": "PerryLink contributors",
   "repository": {

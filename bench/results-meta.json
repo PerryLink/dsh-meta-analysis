@@ -3,7 +3,7 @@
   "datasetVersion": "0.1.0",
   "plugin": {
     "name": "dsh-meta-analysis",
-    "version": "0.1.1"
+    "version": "0.1.2"
   },
   "command": "pnpm run bench:meta",
   "call": "pool(studies, { model: 'both' })",

@@ -21,6 +21,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   ~1.6e-9. The benchmark's CI-derived SEs had amplified the old error into
   I² deviations of 1.12e-9 on two cases; the maximum is now 2.2e-16.
 
+## [0.1.2] - 2026-11-08
+
+### Fixed
+
+- `normalQuantile` now uses Wichura AS 241 (PPND16) instead of the Acklam approximation; the 95% critical value matches 1.959963984540054 to double precision, which the new 20-case benchmark checks to 1e-9 (I²) and 1e-6 (Q, τ²).
+- Added the deterministic 20-case meta-analysis benchmark (`pnpm run bench:meta`) and documented the measured maximum absolute errors.
+
 ## [0.1.1] - 2026-11-08
 
 ### Changed
