@@ -56,6 +56,17 @@ describe('tools', () => {
     expect(failure.error.code).toBe('INVALID_INPUT')
     const badPool = (await makeMaPoolTool(CONFIG).execute({ studies: [{ label: 'A', effect: 0.1 }] }, EXEC)) as { ok: false; error: { code: string } }
     expect(badPool.ok).toBe(false)
+    const nullStudy = (await makeMaPoolTool(CONFIG).execute({ studies: [null, { label: 'B', effect: 0.2, se: 0.1 }] }, EXEC)) as { ok: false; error: { code: string } }
+    expect(nullStudy.ok).toBe(false)
+    expect(nullStudy.error.code).toBe('INVALID_INPUT')
+  })
+
+  it('rejects a malformed ma_report payload instead of throwing', async () => {
+    const bad = (await makeMaReportTool().execute({ result: { model: 'both', studies: [{}] } }, EXEC)) as { ok: false; error: { code: string } }
+    expect(bad.ok).toBe(false)
+    expect(bad.error.code).toBe('INVALID_INPUT')
+    const notAnObject = (await makeMaReportTool().execute({ result: 42 }, EXEC)) as { ok: false; error: { code: string } }
+    expect(notAnObject.error.code).toBe('INVALID_INPUT')
   })
 })
 

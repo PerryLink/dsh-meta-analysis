@@ -13,7 +13,7 @@ English · [简体中文](README-zh.md)
 
 ## What it does
 
-- **`ma_pool`** — inverse-variance pooling on one analysis scale. Fixed: `w = 1/v`, pooled `Σwθ/Σw`, `SE = 1/√Σw`. Random: DerSimonian–Laird `τ²`, weights `1/(v+τ²)`. Reports Q, df, p, I², τ², per-study weights and the pooled CI/p.
+- **`ma_pool`** — inverse-variance pooling on one analysis scale. Fixed: `w = 1/v`, pooled `Σwθ/Σw`, `SE = 1/√Σw`. Random: DerSimonian–Laird `τ²`, weights `1/(v+τ²)`. Reports Q, df, p, I², τ², per-study weights and the pooled CI/p at the requested confidence level (`level`, default 0.95).
 - **`ma_convert`** — OR⇄logOR, RR⇄logRR (SE from a CI), d⇄r, d⇄OR (logistic approximation), SMD from two means, SE from a CI. Every result names the formula and any approximation.
 - **`ma_report`** — renderer-agnostic forest data (effect, CI, weight % + pooled row), Markdown, SARIF 2.1.0.
 - **Egger** — only at k ≥ 10: OLS of θᵢ/SEᵢ on 1/SEᵢ; the intercept tests small-study effects. Labelled a screening aid, not proof of reporting bias.
@@ -85,7 +85,7 @@ dsh --profile <name> --dump-config | grep dsh-meta-analysis
 
 ## Evaluation
 
-**16 tests**: special functions against known critical values (χ²(8,2)=0.9817, t(2.306,8)≈0.05, z(1.96)≈0.05, Φ⁻¹(0.975)), conversions (logOR+SE, d⇄r, d⇄OR, SMD, impossible inputs), pooling (hand-calculated fixed/random estimates, Q=8, I²=0.75, τ²=0.03 from three studies), CI-derived SE and SE/CI disagreement rejection, Egger gating at k=10, heterogeneity warnings, tool schemas, end-to-end report, package contract.
+**21 tests**: special functions against known critical values (χ²(8,2)=0.9817, t(2.306,8)≈0.05, z(1.96)≈0.05, Φ⁻¹(0.975)), conversions (logOR+SE, d⇄r, d⇄OR, SMD, impossible inputs), pooling (hand-calculated fixed/random estimates, Q=8, I²=0.75, τ²=0.03 from three studies), the requested confidence level for pooled and study CIs, CI-derived SE and SE/CI disagreement rejection, invalid models/levels/studies, Egger gating at k=10, heterogeneity warnings, tool schemas, malformed-report rejection, end-to-end report, plugin contract, package contract.
 
 No benchmark is claimed: this is closed-form arithmetic whose correctness is checked against hand calculations and published critical values, not against a labelled corpus.
 

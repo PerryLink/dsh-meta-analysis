@@ -11,7 +11,7 @@
  * @module dsh-meta-analysis/pool
  */
 
-import { chiSquareCdf, tTwoSidedP, zTwoSidedP } from './math.ts'
+import { chiSquareCdf, normalQuantile, tTwoSidedP, zTwoSidedP } from './math.ts'
 
 /** One study on the analysis scale (log OR/RR, d, r, mean difference …). */
 export interface StudyInput {
@@ -65,6 +65,8 @@ export interface EggerResult {
 export interface PoolResult {
   readonly k: number
   readonly model: PoolModel
+  /** Confidence level used for every reported interval. */
+  readonly level: number
   readonly fixed?: PooledEstimate
   readonly random?: PooledEstimate
   readonly Q: number
@@ -84,23 +86,36 @@ export interface PoolOptions {
   readonly level?: number
 }
 
-/** Validate one study and resolve its SE. */
-function resolveStudy(study: StudyInput): { se: number; variance: number } {
-  if (study.label.trim() === '') throw new RangeError('every study needs a label')
-  if (!Number.isFinite(study.effect)) throw new RangeError(`study "${study.label}": effect must be finite`)
+/** Validate one study and resolve its SE at the pooling confidence level. */
+function resolveStudy(study: StudyInput, zCritical: number): { se: number; variance: number } {
+  if (typeof study !== 'object' || study === null) throw new RangeError('every study must be an object')
+  if (typeof study.label !== 'string' || study.label.trim() === '') throw new RangeError('every study needs a label')
+  if (typeof study.effect !== 'number' || !Number.isFinite(study.effect)) throw new RangeError(`study "${study.label}": effect must be finite`)
+  if (study.ciLow !== undefined && (typeof study.ciLow !== 'number' || !Number.isFinite(study.ciLow))) throw new RangeError(`study "${study.label}": ciLow must be a finite number`)
+  if (study.ciHigh !== undefined && (typeof study.ciHigh !== 'number' || !Number.isFinite(study.ciHigh))) throw new RangeError(`study "${study.label}": ciHigh must be a finite number`)
+  /** The interval must describe this effect on the analysis scale. */
+  const assertCentred = (): void => {
+    if (study.ciLow === undefined || study.ciHigh === undefined) return
+    const midpoint = (study.ciLow + study.ciHigh) / 2
+    if (Math.abs(midpoint - study.effect) > Math.max(1e-6, Math.abs(study.effect) * 1e-3)) {
+      throw new RangeError(`study "${study.label}": the CI is not centred on the effect (the CI must be on the analysis scale)`)
+    }
+  }
   let se: number
   if (study.se !== undefined) {
-    if (!Number.isFinite(study.se) || study.se <= 0) throw new RangeError(`study "${study.label}": SE must be positive`)
+    if (typeof study.se !== 'number' || !Number.isFinite(study.se) || study.se <= 0) throw new RangeError(`study "${study.label}": SE must be positive`)
     se = study.se
     if (study.ciLow !== undefined && study.ciHigh !== undefined) {
-      const widthSe = (study.ciHigh - study.ciLow) / (2 * 1.959963984540054)
+      const widthSe = (study.ciHigh - study.ciLow) / (2 * zCritical)
       if (Math.abs(widthSe - se) > Math.max(1e-6, se * 0.05)) {
         throw new RangeError(`study "${study.label}": the CI and SE disagree by more than 5%`)
       }
+      assertCentred()
     }
   } else if (study.ciLow !== undefined && study.ciHigh !== undefined) {
     if (!(study.ciHigh > study.ciLow)) throw new RangeError(`study "${study.label}": CI must have high > low`)
-    se = (study.ciHigh - study.ciLow) / (2 * 1.959963984540054)
+    assertCentred()
+    se = (study.ciHigh - study.ciLow) / (2 * zCritical)
   } else {
     throw new RangeError(`study "${study.label}": provide se or a symmetric ciLow/ciHigh`)
   }
@@ -138,9 +153,11 @@ function egger(studies: readonly StudyResult[]): EggerResult {
 export function pool(studies: readonly StudyInput[], options: PoolOptions = {}): PoolResult {
   if (!Array.isArray(studies) || studies.length < 2) throw new RangeError('pooling needs at least two studies')
   const model = options.model ?? 'both'
+  if (!['fixed', 'random', 'both'].includes(model)) throw new RangeError('model must be fixed, random or both')
   const level = options.level ?? 0.95
-  const zCritical = level === 0.95 ? 1.959963984540054 : 1.959963984540054
-  const resolved = studies.map(study => ({ study, ...resolveStudy(study) }))
+  if (typeof level !== 'number' || !Number.isFinite(level) || !(level > 0 && level < 1)) throw new RangeError('level must be between 0 and 1')
+  const zCritical = normalQuantile(1 - (1 - level) / 2)
+  const resolved = studies.map(study => ({ study, ...resolveStudy(study, zCritical) }))
 
   const warnings: string[] = []
   const weightsFixed = resolved.map(entry => 1 / entry.variance)
@@ -200,6 +217,7 @@ export function pool(studies: readonly StudyInput[], options: PoolOptions = {}):
   const result: PoolResult = {
     k: resolved.length,
     model,
+    level,
     ...(model === 'random' ? {} : { fixed }),
     ...(model === 'fixed' ? {} : { random }),
     Q,

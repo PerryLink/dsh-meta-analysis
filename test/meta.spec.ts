@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { convert } from '../src/effects.ts'
+import { convert, seFromCi } from '../src/effects.ts'
 import { chiSquareCdf, normalQuantile, tTwoSidedP, zTwoSidedP } from '../src/math.ts'
 import { pool } from '../src/pool.ts'
 
@@ -84,6 +84,33 @@ describe('pooling', () => {
     ])
     expect(fromCi.fixed!.effect).toBeCloseTo(0.3, 6)
     expect(() => pool([{ label: 'A', effect: 0.2, se: 0.1, ciLow: 0, ciHigh: 1 }, { label: 'B', effect: 0.4, se: 0.1 }])).toThrow(/disagree/u)
+  })
+
+  it('honours the requested confidence level end to end', () => {
+    const narrow = pool(studies, { level: 0.9 })
+    const z90 = normalQuantile(0.95)
+    expect(narrow.level).toBe(0.9)
+    expect(narrow.fixed!.ciHigh - narrow.fixed!.effect).toBeCloseTo(z90 * narrow.fixed!.se, 10)
+    expect(narrow.random!.ciHigh - narrow.random!.effect).toBeCloseTo(z90 * narrow.random!.se, 10)
+    // A study CI built at 90% must be accepted when the same level is requested.
+    const at90 = pool(
+      [
+        { label: 'A', effect: 0.2, se: 0.1, ciLow: 0.2 - z90 * 0.1, ciHigh: 0.2 + z90 * 0.1 },
+        { label: 'B', effect: 0.4, se: 0.1, ciLow: 0.4 - z90 * 0.1, ciHigh: 0.4 + z90 * 0.1 },
+      ],
+      { level: 0.9 },
+    )
+    expect(at90.fixed!.effect).toBeCloseTo(0.3, 10)
+  })
+
+  it('rejects invalid models, levels and study objects', () => {
+    expect(() => pool(studies, { model: 'weird' as never })).toThrow(/model/u)
+    expect(() => pool(studies, { level: 0 })).toThrow(/level/u)
+    expect(() => pool(studies, { level: 1 })).toThrow(/level/u)
+    expect(() => pool([null as never, ...studies.slice(1)])).toThrow(/object/u)
+    // A CI that is not centred on the effect is not a symmetric CI on this scale.
+    expect(() => pool([{ label: 'A', effect: 0.3, ciLow: 0, ciHigh: 0.4 }, { label: 'B', effect: 0.4, se: 0.1 }])).toThrow(/centred/u)
+    expect(() => seFromCi(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, 0.95)).toThrow(/finite/u)
   })
 
   it('runs Egger only at k >= 10', () => {

@@ -6,6 +6,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `level` is now applied to the pooled and per-study confidence intervals. It
+  was accepted (and exposed in config) but the critical value was hard-coded to
+  the 95% value, so a `level` other than 0.95 silently produced 95% intervals.
+- `ma_report` rejects a malformed `result` payload with `INVALID_INPUT` instead
+  of letting a `TypeError` escape the tool boundary.
+- Invalid study objects, models and confidence levels raise `RangeError` and are
+  reported as `INVALID_INPUT` by the tools. A study CI must be centred on the
+  effect (it is required to be symmetric on the analysis scale), and CI bounds
+  must be finite.
+
+### Added
+
+- Tests for the requested confidence level, invalid models/levels/studies,
+  malformed `ma_report` payloads and the function-plugin mount contract (21
+  tests total).
+
 ## [0.1.0] - 2026-11-08
 
 First release: meta-analysis arithmetic.

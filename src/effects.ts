@@ -65,6 +65,8 @@ function assertFinite(name: string, value: number | undefined): number {
 
 /** SE from a two-sided CI on the analysis scale. */
 export function seFromCi(low: number, high: number, level = 0.95): number {
+  if (!Number.isFinite(low) || !Number.isFinite(high)) throw new RangeError('low and high must be finite numbers')
+  if (typeof level !== 'number' || !Number.isFinite(level) || !(level > 0 && level < 1)) throw new RangeError('level must be between 0 and 1')
   if (!(high > low)) throw new RangeError('high must be greater than low')
   const z = normalQuantile(1 - (1 - level) / 2)
   return (high - low) / (2 * z)

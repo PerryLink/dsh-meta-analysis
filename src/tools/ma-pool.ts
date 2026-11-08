@@ -29,7 +29,7 @@ export function makeMaPoolTool(config: ResolvedConfig) {
     description: [
       'Pool effect sizes with inverse-variance weights (dsh-meta-analysis).',
       '',
-      'Computes fixed-effect and DerSimonian–Laird random-effects estimates with 95% CIs, Q/df/p, I² and τ². Every study needs an effect plus either an SE or a symmetric CI on the same scale (log OR/RR, Cohen\'s d, r …). Egger runs only when k ≥ 10 and is labelled a screening aid.',
+      'Computes fixed-effect and DerSimonian–Laird random-effects estimates with confidence intervals at the requested level (default 95%), Q/df/p, I² and τ². Every study needs an effect plus either an SE or a symmetric CI on the same scale (log OR/RR, Cohen\'s d, r …). Egger runs only when k ≥ 10 and is labelled a screening aid.',
       '',
       'The arithmetic is reproducible from the inputs; it cannot correct a biased study set or a wrong effect scale.',
     ].join('\n'),

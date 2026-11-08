@@ -50,6 +50,11 @@ export function forestData(result: PoolResult, measure = 'effect'): ForestData {
   }
 }
 
+/** Format a confidence level as a percentage. */
+function levelLabel(level: number): string {
+  return `${Number(((level ?? 0.95) * 100).toFixed(1))}% CI`
+}
+
 /**
  * Render a pooling result as Markdown.
  * @param result - pooling result.
@@ -57,10 +62,11 @@ export function forestData(result: PoolResult, measure = 'effect'): ForestData {
  * @returns Markdown text.
  */
 export function renderPoolMarkdown(result: PoolResult, measure = 'effect'): string {
+  const ci = levelLabel(result.level)
   const lines = ['# Meta-analysis', '']
   lines.push(`**Studies:** ${result.k} · **Model:** ${result.model} · **Measure:** ${measure}`)
   lines.push('')
-  lines.push('| Model | Pooled | 95% CI | z | p |')
+  lines.push(`| Model | Pooled | ${ci} | z | p |`)
   lines.push('|---|---:|---|---:|---:|')
   if (result.fixed !== undefined) lines.push(`| fixed | ${f(result.fixed.effect)} | ${f(result.fixed.ciLow)} … ${f(result.fixed.ciHigh)} | ${f(result.fixed.z)} | ${f(result.fixed.p)} |`)
   if (result.random !== undefined) lines.push(`| random | ${f(result.random.effect)} | ${f(result.random.ciLow)} … ${f(result.random.ciHigh)} | ${f(result.random.z)} | ${f(result.random.p)} |`)
@@ -70,7 +76,7 @@ export function renderPoolMarkdown(result: PoolResult, measure = 'effect'): stri
   lines.push('')
   lines.push('## Studies')
   lines.push('')
-  lines.push('| Study | Effect | 95% CI | Weight |')
+  lines.push(`| Study | Effect | ${ci} | Weight |`)
   lines.push('|---|---:|---|---:|')
   for (const study of result.studies) lines.push(`| ${study.label} | ${f(study.effect)} | ${f(study.ciLow)} … ${f(study.ciHigh)} | ${(study.weightFixedPct).toFixed(1)}% |`)
   lines.push('')
