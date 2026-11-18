@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-11-18
+
 ### Added
 
 - Deterministic 20-case synthetic meta-analysis benchmark: `bench/run-meta.mjs`,
