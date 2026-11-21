@@ -1,13 +1,22 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-meta-analysis-hero-en-dark.webp">
+  <img src="docs/assets/dsh-meta-analysis-hero-en-light.webp" width="100%" alt="dsh-meta-analysis: three studies A 0.2, B 0.4 and C 0.6 with SE 0.1 pooled to a fixed-effect 0.400 (SE 0.0577) and a DerSimonian–Laird random-effect 0.400 (SE 0.1155), with Q = 8, I² = 75.0% and τ² = 0.030 flagged warn; on the right the three real warnings and the three forest rows, below the Egger gate at k = 3 < 10 and the note that the arithmetic is checkable by hand">
+</picture>
+
 # dsh-meta-analysis
 
 **Pool the effect sizes — with arithmetic you can check line by line.**
 
 *Effect-size conversion with named formulas, fixed-effect and DerSimonian–Laird random-effects pooling, Q / I² / τ², forest-plot data, Markdown + SARIF, and a light Egger test that refuses to run on fewer than ten studies.*
 
+[简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-brightgreen.svg)]()
 
-English · [简体中文](README-zh.md)
+</div>
 
 ---
 
@@ -17,6 +26,14 @@ English · [简体中文](README-zh.md)
 - **`ma_convert`** — OR⇄logOR, RR⇄logRR (SE from a CI), d⇄r, d⇄OR (logistic approximation), SMD from two means, SE from a CI. Every result names the formula and any approximation.
 - **`ma_report`** — renderer-agnostic forest data (effect, CI, weight % + pooled row), Markdown, SARIF 2.1.0.
 - **Egger** — only at k ≥ 10: OLS of θᵢ/SEᵢ on 1/SEᵢ; the intercept tests small-study effects. Labelled a screening aid, not proof of reporting bias.
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-meta-analysis-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-meta-analysis-flow-v5-light.svg" width="100%" alt="dsh-meta-analysis structure: studies on one analysis scale go through fixed-effect and DerSimonian–Laird random-effects pooling, yield Q / df / pQ / I² / τ² and forest rows, and render as markdown, SARIF 2.1.0 and forest data; Egger runs only at k ≥ 10 and is a screening aid, not proof of reporting bias">
+</picture>
+
+*Structure: input → pool → report; `result`, `markdown` and `sarif` are the outputs, and a `level` other than 0.95 is honoured everywhere. The token labels inside the diagram are the real tool and field names, so the same picture serves all five languages.*
 
 ## What it does not do
 
@@ -87,6 +104,11 @@ dsh --profile <name> --dump-config | grep dsh-meta-analysis
 | `level` | `0.95` | default confidence level |
 
 ## Evaluation
+
+![dsh-meta-analysis benchmark: a real run over the frozen 20-case synthetic meta dataset — 20/20 cases pass, with max absolute error 1.110e-16 for the pooled effect, 8.527e-14 for Q and 2.220e-16 for I²](docs/assets/dsh-meta-analysis-demo.gif)
+
+*Animated: the benchmark adapter's real stdout over the frozen fixtures (no network; re-run 2026-11-21). The expected values are the generator's independent closed form, not plugin output.*
+
 
 **23 unit tests**: special functions against known critical values (χ²(8,2)=0.9817, t(2.306,8)≈0.05, z(1.96)≈0.05, Φ⁻¹(0.975) to 12 decimal places), conversions (logOR+SE, d⇄r, d⇄OR, SMD, impossible inputs), pooling (hand-calculated fixed/random estimates, Q=8, I²=0.75, τ²=0.03 from three studies), the requested confidence level for pooled and study CIs, CI-derived SE and SE/CI disagreement rejection, invalid models/levels/studies, Egger gating at k=10, heterogeneity warnings, tool schemas, malformed-report rejection, end-to-end report, plugin contract, package contract and the enabled/disabled mount contract.
 

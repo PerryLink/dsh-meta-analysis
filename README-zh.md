@@ -1,13 +1,22 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-meta-analysis-hero-zh-dark.webp">
+  <img src="docs/assets/dsh-meta-analysis-hero-zh-light.webp" width="100%" alt="dsh-meta-analysis 配图：三项研究 A 0.2、B 0.4、C 0.6（SE 均为 0.1）合并为固定效应 0.400（SE 0.0577）与 DerSimonian–Laird 随机效应 0.400（SE 0.1155），Q = 8、I² = 75.0%、τ² = 0.030 标记为 warn；右侧是三条真实警告与三行森林图数据，下方是 k = 3 < 10 时 Egger 不运行，以及“算术可手工复核”的说明">
+</picture>
+
 # dsh-meta-analysis
 
 **把效应量合并起来 —— 每一步算术都能逐行核对。**
 
 *带具名公式的效应量换算、固定效应与 DerSimonian–Laird 随机效应合并、Q / I² / τ²、森林图数据、Markdown + SARIF，以及一项在少于十项研究时拒绝运行的轻量 Egger 检验。*
 
+[English](README.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24.9-brightgreen.svg)]()
 
-[English](README.md) · 简体中文
+</div>
 
 ---
 
@@ -17,6 +26,14 @@
 - **`ma_convert`** —— OR⇄logOR、RR⇄logRR（由 CI 求 SE）、d⇄r、d⇄OR（logistic 近似）、由两个均值求 SMD、由 CI 求 SE。每个结果都会注明所用公式及任何近似。
 - **`ma_report`** —— 与渲染器无关的森林图数据（效应、CI、权重百分比 + 合并行）、Markdown、SARIF 2.1.0。
 - **Egger** —— 仅在 k ≥ 10 时运行：以 `θᵢ/SEᵢ` 对 `1/SEᵢ` 做 OLS；截距用于检验小样本研究效应。它被明确标为筛查辅助手段，而不是发表偏倚的证据。
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-meta-analysis-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-meta-analysis-flow-v5-light.svg" width="100%" alt="dsh-meta-analysis 结构图：同一分析尺度上的研究输入经固定效应与 DerSimonian–Laird 随机效应合并，得到 Q / df / pQ / I² / τ² 与森林图数据，再渲染为 markdown、SARIF 2.1.0 与森林图；Egger 仅在 k ≥ 10 时运行，且只是筛查辅助手段，不是发表偏倚的证据">
+</picture>
+
+*结构：输入 → 合并 → 报告；`result`、`markdown`、`sarif` 是三条输出，`level` 取 0.95 以外的值也会如实生效。图内只有工具名与字段名，五语共用同一张结构图。*
 
 ## 它不做什么
 
@@ -87,6 +104,11 @@ dsh --profile <name> --dump-config | grep dsh-meta-analysis
 | `level` | `0.95` | 默认置信水平 |
 
 ## 评测
+
+![dsh-meta-analysis 基准评测：20 组冻结合成元分析用例的真实运行 —— 20/20 全部通过，合并效应最大绝对误差 1.110e-16，Q 为 8.527e-14，I² 为 2.220e-16](docs/assets/dsh-meta-analysis-demo.gif)
+
+*动图是基准适配器的真实 stdout（冻结用例、不联网；2026-11-21 复跑）。期望值来自生成器独立的闭式实现，不是插件输出。*
+
 
 **23 个单元测试**：特殊函数对照已知临界值（χ²(8,2)=0.9817、t(2.306,8)≈0.05、z(1.96)≈0.05、Φ⁻¹(0.975) 精确到 12 位小数）、换算（logOR+SE、d⇄r、d⇄OR、SMD、不可能输入）、合并（手工计算的固定/随机效应估计，三项研究得到 Q=8、I²=0.75、τ²=0.03）、合并与各研究 CI 按所请求置信水平计算、由 CI 推导 SE 及拒绝 SE/CI 不一致、非法模型/置信水平/研究输入、Egger 在 k=10 时的门控、异质性警告、工具 schema、格式错误报告拒绝、端到端报告、插件契约、包契约、启用/禁用挂载契约。
 
