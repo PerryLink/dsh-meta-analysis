@@ -7,6 +7,8 @@
 
 # dsh-meta-analysis
 
+当前版本 `0.1.5`。
+
 **Pool the effect sizes — with arithmetic you can check line by line.**
 
 *Effect-size conversion with named formulas, fixed-effect and DerSimonian–Laird random-effects pooling, Q / I² / τ², forest-plot data, Markdown + SARIF, and a light Egger test that refuses to run on fewer than ten studies.*

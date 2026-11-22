@@ -1,6 +1,6 @@
 {
   "name": "dsh-meta-analysis",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Meta-analysis arithmetic for DeepSeek Harness: effect-size conversions (OR/RR/d/r/SMD, SE from CI) with named formulas, fixed-effect and DerSimonian-Laird random-effects pooling, Q/df/p, I2, tau2, forest-plot data, Markdown/SARIF reports and a light Egger test for k >= 10. Local, dependency-free, reproducible from the inputs.",
   "author": "PerryLink contributors",
   "repository": {
@@ -20,7 +20,8 @@
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
   },
   "files": [
     "lib",
@@ -32,7 +33,9 @@
     "LICENSE",
     "SECURITY.md",
     "docs/assets/*",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "locale/*.json",
+    "icon.png"
   ],
   "sideEffects": false,
   "dsh": {
@@ -81,5 +84,6 @@
     "verify:package": "node scripts/verify-package.mjs",
     "bench:meta": "node bench/run-meta.mjs"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "icon": "icon.png"
 }
